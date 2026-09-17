@@ -1,0 +1,22 @@
+# Render Blueprint — lets you deploy with one click via "New + > Blueprint"
+# instead of clicking through the manual web-service form.
+services:
+  - type: web
+    name: internlink
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+    # NOTE: the free plan has no persistent disk, so internlink.db resets
+    # (and reseeds with demo data) every time the free instance restarts.
+    # If you upgrade to a paid instance later, add a disk + this connection
+    # string override to make data persistent:
+    # disk:
+    #   name: data
+    #   mountPath: /app/data
+    #   sizeGB: 1
+    # envVars:
+    #   - key: ConnectionStrings__DefaultConnection
+    #     value: "Data Source=/app/data/internlink.db"
