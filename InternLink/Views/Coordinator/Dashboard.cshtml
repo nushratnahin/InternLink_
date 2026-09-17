@@ -1,0 +1,102 @@
+@model CoordinatorDashboardViewModel
+@{
+    ViewData["Title"] = "Coordinator Dashboard";
+}
+
+<div class="dashboard">
+    <h2>Review Dashboard</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Active Placements</div>
+            <div class="stat-value">@Model.ActiveCount</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-label">Completed</div>
+            <div class="stat-value">@Model.CompletedCount</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-label">Logs Pending Review</div>
+            <div class="stat-value">@Model.PendingLogCount</div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <h3>Pending Logbook Reviews</h3>
+        @if (!Model.PendingLogs.Any())
+        {
+            <p>Nothing waiting on you right now. 🎉</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Company</th>
+                            <th>Week</th>
+                            <th>Hours</th>
+                            <th>Tasks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.PendingLogs)
+                        {
+                            <tr>
+                                <td>@log.Placement?.Student?.FullName</td>
+                                <td>@log.Placement?.CompanyName</td>
+                                <td>Week @log.WeekNumber</td>
+                                <td>@log.HoursLogged.ToString("0.#") h</td>
+                                <td style="max-width:280px;">@log.TasksCompleted</td>
+                                <td>
+                                    <a class="btn btn-secondary btn-small" asp-controller="Coordinator" asp-action="PlacementDetails" asp-route-id="@log.PlacementId">Review</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="content-card">
+        <h3>All Placements</h3>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Company</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Coordinator</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.AllPlacements)
+                    {
+                        <tr>
+                            <td>@p.Student?.FullName</td>
+                            <td>@p.CompanyName</td>
+                            <td><span class="badge badge-@p.Status.ToString().ToLower()">@p.Status</span></td>
+                            <td>@p.ApprovedHours.ToString("0.#") / @p.RequiredHours h</td>
+                            <td>@(p.Coordinator?.FullName ?? "Unassigned")</td>
+                            <td><a class="btn btn-secondary btn-small" asp-controller="Coordinator" asp-action="PlacementDetails" asp-route-id="@p.Id">Open</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

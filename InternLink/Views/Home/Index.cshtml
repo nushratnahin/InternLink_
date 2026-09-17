@@ -1,0 +1,78 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero">
+    <div class="hero-badge">✨ AI-Powered Career Platform</div>
+    <h1>Your internship journey, <span>simplified</span></h1>
+    <p>Connect with top companies, get supervisor feedback, and prepare for success—all in one platform built for university students and institutions.</p>
+    <div class="hero-buttons">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Roles">Get Started</a>
+        <a class="btn btn-secondary" href="#features">Learn More</a>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <h2>Everything you need</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">📋</div>
+            <h3>Seamless Placement Management</h3>
+            <p>Create and track internship placements with automated hours tracking and real-time progress updates.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3>Weekly Logbook System</h3>
+            <p>Students submit weekly progress logs reviewed by coordinators with approval workflows.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⭐</div>
+            <h3>Supervisor Evaluations</h3>
+            <p>Share token-based links—no login required for external evaluators to provide feedback.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎓</div>
+            <h3>Automated Grading</h3>
+            <p>Automatic grade calculation combining supervisor scores, logbook hours, and faculty defense.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📄</div>
+            <h3>Clearance Certificates</h3>
+            <p>Download a printable clearance certificate upon successful completion.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Faculty Cockpit Dashboard</h3>
+            <p>Centralized view for grading, analytics, and performance insights with real-time data.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to get started?</h2>
+        <p>Select your role and access the system in seconds.</p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Roles">Enter System</a>
+    </div>
+</section>
+
+<section class="dashboard" style="max-width:1200px;">
+    <h2>Live platform snapshot</h2>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Active Internships</div>
+            <div class="stat-value">@ViewBag.ActivePlacements</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-label">Completed</div>
+            <div class="stat-value">@ViewBag.CompletedPlacements</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-label">Logbook Reviews Pending</div>
+            <div class="stat-value">@ViewBag.PendingReviews</div>
+        </div>
+    </div>
+</section>

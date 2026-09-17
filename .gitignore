@@ -1,0 +1,21 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+## Database (don't commit runtime data)
+*.db
+*.db-shm
+*.db-wal
+
+## OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+## Secrets
+appsettings.*.local.json
+secrets.json

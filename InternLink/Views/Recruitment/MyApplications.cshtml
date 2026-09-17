@@ -1,0 +1,45 @@
+@model List<RecruitmentApplication>
+@{
+    ViewData["Title"] = "My Applications";
+}
+
+<div class="dashboard">
+    <div class="page-header">
+        <h2>My Applications</h2>
+        <a class="btn btn-primary" asp-controller="Recruitment" asp-action="Apply">📨 Apply</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="content-card">
+            <p>You haven't applied anywhere yet.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var app in Model)
+        {
+            <div class="content-card">
+                <div class="page-header" style="margin-bottom:0.5rem;">
+                    <div>
+                        <h3 style="margin-bottom:0.25rem;">@app.CompanyName &mdash; @app.Position</h3>
+                        <span class="badge badge-@app.Status.ToString().ToLower()">@app.Status</span>
+                    </div>
+                    @if (app.PlacementId is not null)
+                    {
+                        <a class="btn btn-secondary btn-small" asp-controller="Student" asp-action="PlacementDetails" asp-route-id="@app.PlacementId">Go to Placement →</a>
+                    }
+                </div>
+                @if (app.PlacementId is not null)
+                {
+                    <p style="font-size:13px; color:var(--text-secondary);">🎉 A placement was auto-created when this application reached "@app.Status".</p>
+                }
+            </div>
+        }
+    }
+</div>

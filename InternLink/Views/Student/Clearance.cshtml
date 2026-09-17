@@ -1,0 +1,36 @@
+@model Placement
+@{
+    ViewData["Title"] = "Clearance Certificate";
+}
+
+<div class="certificate">
+    <div class="logo" style="justify-content:center; margin-bottom:1.5rem;">
+        <div class="logo-icon">🔗</div>
+        <div class="logo-text">InternLink</div>
+    </div>
+    <h1>Certificate of Internship Clearance</h1>
+    <p style="color:var(--text-secondary);">This certifies that</p>
+    <div class="cert-name">@Model.Student?.FullName</div>
+    <p style="color:var(--text-secondary); font-size:13px;">
+        Student ID: @(Model.Student?.StudentIdNumber ?? "N/A") &middot; Department: @(Model.Student?.Department ?? "N/A")
+    </p>
+    <p style="color:var(--text-secondary);">has successfully completed an internship as</p>
+    <p style="font-size:20px; font-weight:600; margin:0.5rem 0 1.5rem;">@Model.Position at @Model.CompanyName</p>
+    <p style="color:var(--text-secondary);">
+        @Model.StartDate.ToString("MMMM d, yyyy") &ndash; @Model.EndDate.ToString("MMMM d, yyyy")
+        &middot; @Model.ApprovedHours.ToString("0.#") approved hours
+    </p>
+
+    <div class="cert-grade">@Model.Grade!.LetterGrade</div>
+    <p style="font-weight:600;">GPA @Model.Grade.GradePoint.ToString("0.00") &middot; @Model.Grade.ClearanceStatus</p>
+    <p style="color:var(--text-secondary); margin-bottom:2rem;">Final score: @Model.Grade.FinalScore.ToString("0.0") / 100</p>
+
+    <p style="font-size:12px; color:var(--text-muted);">
+        Graded on @Model.Grade.GradedDate.ToString("MMMM d, yyyy") by @(Model.Grade.GradedByFaculty?.FullName ?? "Faculty")
+    </p>
+
+    <div class="no-print" style="margin-top:2rem; display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap;">
+        <a class="btn btn-primary" asp-controller="Student" asp-action="ClearancePdf" asp-route-id="@Model.Id">⬇️ Download PDF</a>
+        <button class="btn btn-secondary" onclick="window.print()" type="button">🖨️ Print</button>
+    </div>
+</div>

@@ -1,0 +1,90 @@
+@model List<RecruitmentApplication>
+@{
+    ViewData["Title"] = "Recruitment Pipeline";
+}
+
+<div class="dashboard" style="max-width:1050px;">
+    <div class="page-header">
+        <h2>Recruitment Pipeline</h2>
+    </div>
+    <p style="color:var(--text-secondary); font-size:13px; margin-top:-0.5rem;">
+        Moving an applicant to <strong>Offered</strong> or <strong>Accepted</strong> automatically creates their post-placement logbook — no extra step needed.
+    </p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="content-card">
+        @if (!Model.Any())
+        {
+            <p>No applications yet.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Company</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Placement</th>
+                            <th>Advance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var app in Model)
+                        {
+                            <tr>
+                                <td>@app.Student?.FullName</td>
+                                <td>@app.CompanyName</td>
+                                <td>@app.Position</td>
+                                <td><span class="badge badge-@app.Status.ToString().ToLower()">@app.Status</span></td>
+                                <td>
+                                    @if (app.PlacementId is not null)
+                                    {
+                                        <a asp-controller="Coordinator" asp-action="PlacementDetails" asp-route-id="@app.PlacementId">View →</a>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:var(--text-secondary);">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (app.Status != FunnelStatus.Rejected && app.PlacementId is null)
+                                    {
+                                        <form asp-controller="Recruitment" asp-action="AdvanceStatus" method="post" style="display:flex; gap:0.4rem;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@app.Id" />
+                                            <select name="status" style="padding:0.3rem 0.5rem; font-size:12px;">
+                                                @foreach (var s in Enum.GetValues<FunnelStatus>())
+                                                {
+                                                    if (s == app.Status)
+                                                    {
+                                                        <option value="@s" selected>@s</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@s">@s</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-small">Update</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:var(--text-secondary); font-size:12px;">Final</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

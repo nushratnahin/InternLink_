@@ -1,0 +1,76 @@
+@model SubmitEvaluationViewModel
+@{
+    ViewData["Title"] = "Supervisor Evaluation";
+    Layout = "_Layout";
+
+    var criteria = new (string Field, string Label, string Help)[]
+    {
+        ("TechnicalCompetencyScore", "Technical Competency & Code Quality", "Architecture, clean code standards, tool proficiency."),
+        ("ProblemSolvingAutonomyScore", "Problem Solving & Autonomy", "Initiative in troubleshooting, debugging, and independent research."),
+        ("TeamCollaborationScore", "Team Collaboration & Communication", "Interpersonal dynamics, sprint standups, and clarity."),
+        ("PunctualityReliabilityScore", "Punctuality & Reliability", "Adherence to working hours, task delivery dates, and sprint milestones."),
+        ("AdaptabilityLearningScore", "Adaptability & Learning Velocity", "Speed of mastering unfamiliar frameworks and business domains."),
+        ("ProfessionalConductScore", "Professional Conduct & Workplace Ethics", "Ethical integrity, documentation hygiene, and attitude."),
+    };
+}
+
+<div class="form-page" style="max-width:640px;">
+    <div class="form-card">
+        <h2>Supervisor Evaluation</h2>
+        <p class="form-subtitle">
+            You're evaluating <strong>@Model.StudentName</strong>'s internship as <strong>@Model.Position</strong> at <strong>@Model.CompanyName</strong>.
+            No account needed — this link is unique to this student.
+        </p>
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <form asp-controller="Supervisor" asp-action="Evaluate" method="post">
+            <input type="hidden" asp-for="Token" />
+            <input type="hidden" asp-for="StudentName" />
+            <input type="hidden" asp-for="CompanyName" />
+            <input type="hidden" asp-for="Position" />
+
+            @foreach (var c in criteria)
+            {
+                <div class="form-group">
+                    <label>@c.Label</label>
+                    <p style="font-size:12px; color:var(--text-secondary); margin:0 0 0.35rem;">@c.Help</p>
+                    <div class="rating-group">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <input type="radio" id="@(c.Field)_@i" name="@c.Field" value="@i" />
+                            <label for="@(c.Field)_@i">@i</label>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <label asp-for="KeyStrengths">Key Strengths</label>
+                <textarea asp-for="KeyStrengths"></textarea>
+                <span asp-validation-for="KeyStrengths" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="AreasForImprovement">Constructive Feedback / Areas for Growth</label>
+                <textarea asp-for="AreasForImprovement"></textarea>
+                <span asp-validation-for="AreasForImprovement" class="field-validation-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Recommendation">Pre-Placement Offer (PPO) Recommendation</label>
+                <select asp-for="Recommendation">
+                    <option value="Definite Hire">Definite Hire</option>
+                    <option value="Potential Hire">Potential Hire</option>
+                    <option value="Not Recommended">Not Recommended</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;">Submit evaluation</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

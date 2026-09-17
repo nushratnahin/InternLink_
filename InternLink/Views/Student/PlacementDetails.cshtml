@@ -1,0 +1,62 @@
+@model Placement
+@{
+    ViewData["Title"] = "Placement Details";
+}
+
+<div class="dashboard" style="max-width:900px;">
+    <div class="page-header">
+        <h2>@Model.CompanyName &mdash; @Model.Position</h2>
+        <span class="badge badge-@Model.Status.ToString().ToLower()">@Model.Status</span>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">@TempData["Error"]</div>
+    }
+
+    <div class="content-card">
+        <h3>Overview</h3>
+        <p><strong>Host supervisor:</strong> @Model.SupervisorName (@Model.SupervisorEmail)</p>
+        <p><strong>Dates:</strong> @Model.StartDate.ToString("MMM d, yyyy") &ndash; @Model.EndDate.ToString("MMM d, yyyy")</p>
+        <p style="margin-bottom:0.75rem;"><strong>Hours:</strong> @Model.ApprovedHours.ToString("0.#") / @Model.RequiredHours approved</p>
+        <div class="progress-track">
+            <div class="progress-fill" style="width:@Model.ProgressPercent.ToString("0")%;"></div>
+        </div>
+    </div>
+
+    @if (Model.Evaluation is not null)
+    {
+        <div class="content-card">
+            <h3>Supervisor Evaluation</h3>
+            @if (Model.Evaluation.IsSubmitted)
+            {
+                <p>Submitted on @Model.Evaluation.SubmittedDate?.ToString("MMM d, yyyy") — average score @Model.Evaluation.AverageScore.ToString("0.0")/5.</p>
+            }
+            else
+            {
+                <p>Your coordinator has generated an evaluation link, but the supervisor hasn't submitted it yet.</p>
+            }
+        </div>
+    }
+
+    @if (Model.Grade is not null)
+    {
+        <div class="content-card">
+            <h3>Final Grade</h3>
+            <p style="font-size:32px; font-weight:700; color:var(--accent-color);">@Model.Grade.FinalScore.ToString("0.0") / 100 (@Model.Grade.LetterGrade &middot; GPA @Model.Grade.GradePoint.ToString("0.00"))</p>
+            <p style="font-size:14px; font-weight:600;">@Model.Grade.ClearanceStatus</p>
+            <p style="font-size:13px; color:var(--text-secondary);">
+                Logbook @Model.Grade.LogbookScore.ToString("0.0") (30%) · Supervisor @Model.Grade.SupervisorScore.ToString("0.0") (40%) · Defense @Model.Grade.DefenseScore.ToString("0.0") (30%)
+            </p>
+        </div>
+    }
+
+    <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <a class="btn btn-secondary" asp-controller="Student" asp-action="Logbook" asp-route-id="@Model.Id">View Logbook</a>
+        @if (Model.Status == PlacementStatus.Completed)
+        {
+            <a class="btn btn-primary" asp-controller="Student" asp-action="ClearancePdf" asp-route-id="@Model.Id">Download Clearance PDF</a>
+        }
+        <a class="btn btn-secondary" asp-controller="Student" asp-action="Dashboard">Back to Dashboard</a>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<InternLink.Models.ApplicationUser> SignInManager
+@inject UserManager<InternLink.Models.ApplicationUser> UserManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - InternLink</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="dark-theme">
+    <nav>
+        <a class="logo" asp-controller="Home" asp-action="Index">
+            <div class="logo-icon">🔗</div>
+            <div class="logo-text">InternLink</div>
+        </a>
+        <div class="nav-right">
+            <div class="nav-menu">
+                <a class="nav-button" asp-controller="Home" asp-action="Index">Home</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    @if (User.IsInRole(InternLink.Models.Roles.Student))
+                    {
+                        <a class="nav-button" asp-controller="Student" asp-action="Dashboard">Dashboard</a>
+                        <a class="nav-button" asp-controller="Recruitment" asp-action="MyApplications">Applications</a>
+                    }
+                    else if (User.IsInRole(InternLink.Models.Roles.Coordinator))
+                    {
+                        <a class="nav-button" asp-controller="Coordinator" asp-action="Dashboard">Dashboard</a>
+                        <a class="nav-button" asp-controller="Recruitment" asp-action="Pipeline">Pipeline</a>
+                    }
+                    else if (User.IsInRole(InternLink.Models.Roles.Faculty))
+                    {
+                        <a class="nav-button" asp-controller="Faculty" asp-action="Dashboard">Dashboard</a>
+                    }
+                    <span class="nav-username">@User.Identity!.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="nav-button">Log out</button>
+                    </form>
+                }
+                else
+                {
+                    <a class="nav-button" asp-controller="Home" asp-action="Roles">Roles</a>
+                    <a class="nav-button" asp-controller="Account" asp-action="Login">Log in</a>
+                    <a class="nav-button" asp-controller="Account" asp-action="Register">Sign up</a>
+                }
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode" type="button">
+                <span id="theme-icon">☀️</span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        <p>&copy; @DateTime.Now.Year InternLink. All rights reserved. Built for the modern internship experience. | Theme: <span id="theme-name">Dark Mode</span></p>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

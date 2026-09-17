@@ -1,0 +1,157 @@
+@model Placement
+@{
+    ViewData["Title"] = "Placement Details";
+}
+
+<div class="dashboard" style="max-width:1050px;">
+    <div class="page-header">
+        <div>
+            <h2>@Model.CompanyName &mdash; @Model.Position</h2>
+            <p style="color:var(--text-secondary); font-size:14px;">Student: @Model.Student?.FullName (@Model.Student?.Email)</p>
+        </div>
+        <span class="badge badge-@Model.Status.ToString().ToLower()">@Model.Status</span>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">@TempData["Error"]</div>
+    }
+
+    <div class="content-card">
+        <h3>Overview</h3>
+        <p><strong>Host supervisor:</strong> @Model.SupervisorName (@Model.SupervisorEmail) @(string.IsNullOrWhiteSpace(Model.SupervisorPhone) ? "" : $"· {Model.SupervisorPhone}")</p>
+        <p><strong>Dates:</strong> @Model.StartDate.ToString("MMM d, yyyy") &ndash; @Model.EndDate.ToString("MMM d, yyyy")</p>
+        <p style="margin-bottom:0.75rem;"><strong>Hours:</strong> @Model.ApprovedHours.ToString("0.#") / @Model.RequiredHours approved (@Model.ProgressPercent.ToString("0.#")%)</p>
+        <div class="progress-track">
+            <div class="progress-fill" style="width:@Model.ProgressPercent.ToString("0")%;"></div>
+        </div>
+
+        @if (Model.Coordinator is null)
+        {
+            <form asp-controller="Coordinator" asp-action="AssignToMe" asp-route-id="@Model.Id" method="post" style="margin-top:1rem;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-secondary btn-small">Assign this placement to me</button>
+            </form>
+        }
+        else
+        {
+            <p style="margin-top:1rem; font-size:13px; color:var(--text-secondary);">Coordinator: @Model.Coordinator.FullName</p>
+        }
+    </div>
+
+    <div class="content-card">
+        <h3>Weekly Timesheet Audit</h3>
+        @if (!Model.LogbookEntries.Any())
+        {
+            <p>No log entries submitted yet.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Dates</th>
+                            <th>Hours</th>
+                            <th>Tasks / Skills / Learnings</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.LogbookEntries.OrderBy(l => l.WeekNumber))
+                        {
+                            <tr>
+                                <td>Week @log.WeekNumber</td>
+                                <td style="white-space:nowrap;">@log.WeekStartDate.ToString("MMM d") &ndash; @log.WeekEndDate.ToString("MMM d")</td>
+                                <td>@log.HoursLogged.ToString("0.#") h</td>
+                                <td style="max-width:300px; font-size:13px;">
+                                    <div><strong>Tasks:</strong> @log.TasksCompleted</div>
+                                    @if (!string.IsNullOrWhiteSpace(log.SkillsApplied))
+                                    {
+                                        <div><strong>Skills:</strong> @log.SkillsApplied</div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(log.ChallengesAndLearnings))
+                                    {
+                                        <div><strong>Learnings:</strong> @log.ChallengesAndLearnings</div>
+                                    }
+                                </td>
+                                <td><span class="badge badge-@log.Status.ToString().ToLower()">@log.Status</span></td>
+                                <td>
+                                    @if (log.Status == LogbookStatus.Submitted)
+                                    {
+                                        <form asp-controller="Coordinator" asp-action="ReviewLog" method="post" style="display:flex; flex-direction:column; gap:0.4rem; align-items:stretch; min-width:160px;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="LogbookEntryId" value="@log.Id" />
+                                            <input type="hidden" name="returnPlacementId" value="@Model.Id" />
+                                            <input type="text" name="Comment" placeholder="Comment (required to flag)" style="width:100%; padding:0.35rem 0.5rem; font-size:12px;" />
+                                            <div style="display:flex; gap:0.4rem;">
+                                                <button type="submit" name="Decision" value="Approve" class="btn btn-primary btn-small">Approve</button>
+                                                <button type="submit" name="Decision" value="Flag" class="btn btn-danger btn-small">Flag</button>
+                                            </div>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span style="font-size:12px; color:var(--text-secondary);">@(log.CoordinatorComment ?? "—")</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="content-card">
+        <h3>Supervisor Evaluation</h3>
+        @if (Model.Evaluation is null)
+        {
+            <p style="margin-bottom:1rem;">No evaluation link has been generated yet. One will be created automatically once the intern reaches 300 approved hours or completes Week 10 — or you can send one now.</p>
+            <form asp-controller="Coordinator" asp-action="GenerateEvaluationLink" asp-route-placementId="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-primary btn-small">Generate evaluation link</button>
+            </form>
+        }
+        else if (Model.Evaluation.IsSubmitted)
+        {
+            <p>Submitted on @Model.Evaluation.SubmittedDate?.ToString("MMM d, yyyy") — average score @Model.Evaluation.AverageScore.ToString("0.0")/5 (@Model.Evaluation.ScoreOutOf100.ToString("0.0")/100).</p>
+            <div class="table-wrap" style="margin-top:0.75rem;">
+                <table class="data-table">
+                    <tbody>
+                        <tr><td>Technical Competency & Code Quality</td><td>@Model.Evaluation.TechnicalCompetencyScore / 5</td></tr>
+                        <tr><td>Problem Solving & Autonomy</td><td>@Model.Evaluation.ProblemSolvingAutonomyScore / 5</td></tr>
+                        <tr><td>Team Collaboration & Communication</td><td>@Model.Evaluation.TeamCollaborationScore / 5</td></tr>
+                        <tr><td>Punctuality & Reliability</td><td>@Model.Evaluation.PunctualityReliabilityScore / 5</td></tr>
+                        <tr><td>Adaptability & Learning Velocity</td><td>@Model.Evaluation.AdaptabilityLearningScore / 5</td></tr>
+                        <tr><td>Professional Conduct & Workplace Ethics</td><td>@Model.Evaluation.ProfessionalConductScore / 5</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>PPO recommendation:</strong> @Model.Evaluation.Recommendation</p>
+            @if (!string.IsNullOrWhiteSpace(Model.Evaluation.KeyStrengths))
+            {
+                <p style="font-size:13px; color:var(--text-secondary); margin-top:0.5rem;"><strong>Key strengths:</strong> @Model.Evaluation.KeyStrengths</p>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.Evaluation.AreasForImprovement))
+            {
+                <p style="font-size:13px; color:var(--text-secondary);"><strong>Areas for growth:</strong> @Model.Evaluation.AreasForImprovement</p>
+            }
+        }
+        else
+        {
+            <p style="margin-bottom:0.5rem;">Send this link to @Model.SupervisorName to collect their evaluation (expires @Model.Evaluation.ExpiresAt.ToString("MMM d, yyyy")):</p>
+            <div class="table-wrap">
+                <input type="text" readonly value="@Url.Action("Evaluate", "Supervisor", new { token = Model.Evaluation.Token }, Context.Request.Scheme)" onclick="this.select()" style="width:100%;" />
+            </div>
+        }
+    </div>
+
+    <a class="btn btn-secondary" asp-controller="Coordinator" asp-action="Dashboard">Back to Dashboard</a>
+</div>

@@ -1,0 +1,105 @@
+@model FacultyDashboardViewModel
+@{
+    ViewData["Title"] = "Faculty Dashboard";
+}
+
+<div class="dashboard">
+    <h2>Grading Cockpit</h2>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-label">Ready to Grade</div>
+            <div class="stat-value">@Model.ReadyToGrade.Count</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-label">Graded</div>
+            <div class="stat-value">@Model.Graded.Count</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-label">Average Final Score</div>
+            <div class="stat-value">@Model.AverageFinalScore.ToString("0.0")</div>
+        </div>
+    </div>
+
+    <div class="content-card">
+        <h3>Ready for Defense Score</h3>
+        @if (!Model.ReadyToGrade.Any())
+        {
+            <p>Nothing waiting on you right now — placements appear here once their supervisor evaluation is submitted.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Company</th>
+                            <th>Logbook %</th>
+                            <th>Supervisor Score</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.ReadyToGrade)
+                        {
+                            <tr>
+                                <td>@p.Student?.FullName</td>
+                                <td>@p.CompanyName</td>
+                                <td>@p.ProgressPercent.ToString("0")%</td>
+                                <td>@p.Evaluation!.ScoreOutOf100.ToString("0.0")/100</td>
+                                <td><a class="btn btn-primary btn-small" asp-controller="Faculty" asp-action="GradePlacement" asp-route-id="@p.Id">Grade</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="content-card">
+        <h3>Graded</h3>
+        @if (!Model.Graded.Any())
+        {
+            <p>No placements graded yet.</p>
+        }
+        else
+        {
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Company</th>
+                            <th>Final Score</th>
+                            <th>Grade / GPA</th>
+                            <th>Clearance</th>
+                            <th>Graded On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.Graded)
+                        {
+                            <tr>
+                                <td>@p.Student?.FullName</td>
+                                <td>@p.CompanyName</td>
+                                <td>@p.Grade!.FinalScore.ToString("0.0")</td>
+                                <td><span class="badge badge-@p.Status.ToString().ToLower()">@p.Grade.LetterGrade</span> @p.Grade.GradePoint.ToString("0.00")</td>
+                                <td style="font-size:12px;">@p.Grade.ClearanceStatus</td>
+                                <td>@p.Grade.GradedDate.ToString("MMM d, yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

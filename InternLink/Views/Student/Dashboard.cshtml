@@ -1,0 +1,55 @@
+@model StudentDashboardViewModel
+@{
+    ViewData["Title"] = "Student Dashboard";
+}
+
+<div class="dashboard">
+    <div class="page-header">
+        <h2>My Placements</h2>
+        <a class="btn btn-primary" asp-controller="Student" asp-action="CreatePlacement">📋 New Placement</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-error">@TempData["Error"]</div>
+    }
+
+    @if (!Model.Placements.Any())
+    {
+        <div class="content-card">
+            <p>You don't have any placements yet. Create one to start logging hours.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var p in Model.Placements)
+        {
+            <div class="content-card">
+                <div class="page-header" style="margin-bottom:1rem;">
+                    <div>
+                        <h3 style="margin-bottom:0.25rem;">@p.CompanyName &mdash; @p.Position</h3>
+                        <span class="badge badge-@p.Status.ToString().ToLower()">@p.Status</span>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                        <a class="btn btn-secondary btn-small" asp-controller="Student" asp-action="PlacementDetails" asp-route-id="@p.Id">Details</a>
+                        <a class="btn btn-secondary btn-small" asp-controller="Student" asp-action="Logbook" asp-route-id="@p.Id">Logbook</a>
+                        @if (p.Status == PlacementStatus.Completed)
+                        {
+                            <a class="btn btn-primary btn-small" asp-controller="Student" asp-action="Clearance" asp-route-id="@p.Id">Clearance</a>
+                        }
+                    </div>
+                </div>
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:0.5rem;">
+                    @p.ApprovedHours.ToString("0.#") / @p.RequiredHours hours approved
+                </p>
+                <div class="progress-track">
+                    <div class="progress-fill" style="width:@p.ProgressPercent.ToString("0")%;"></div>
+                </div>
+            </div>
+        }
+    }
+</div>

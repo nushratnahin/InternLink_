@@ -1,0 +1,63 @@
+@model CreateApplicationViewModel
+@{
+    ViewData["Title"] = "Apply";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <h2>Apply for an internship</h2>
+        <p class="form-subtitle">This represents the pre-placement recruitment pipeline (job circular &rarr; interview &rarr; offer). Once a coordinator marks your application "Offered" or "Accepted", your post-placement logbook is created automatically.</p>
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <form asp-controller="Recruitment" asp-action="Apply" method="post">
+            <div class="form-group">
+                <label asp-for="CompanyName">Company name</label>
+                <input asp-for="CompanyName" type="text" />
+                <span asp-validation-for="CompanyName" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Position">Role / position</label>
+                <input asp-for="Position" type="text" />
+                <span asp-validation-for="Position" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupervisorName">Company supervisor name</label>
+                <input asp-for="SupervisorName" type="text" />
+                <span asp-validation-for="SupervisorName" class="field-validation-error"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="SupervisorEmail">Supervisor email</label>
+                    <input asp-for="SupervisorEmail" type="email" />
+                    <span asp-validation-for="SupervisorEmail" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SupervisorPhone">Supervisor phone (optional)</label>
+                    <input asp-for="SupervisorPhone" type="text" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="StartDate">Expected start date</label>
+                    <input asp-for="StartDate" type="date" />
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate">Expected end date</label>
+                    <input asp-for="EndDate" type="date" />
+                    <span asp-validation-for="EndDate" class="field-validation-error"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="RequiredHours">Target hours</label>
+                <input asp-for="RequiredHours" type="number" min="1" />
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;">Submit application</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

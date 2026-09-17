@@ -1,0 +1,15 @@
+@model Evaluation
+@{
+    ViewData["Title"] = "Thank You";
+}
+<div class="form-page">
+    <div class="form-card" style="text-align:center;">
+        <div style="font-size:48px; margin-bottom:1rem;">✅</div>
+        <h2>Thank you!</h2>
+        <p class="form-subtitle">
+            Your evaluation of @Model.Placement?.Student?.FullName has been submitted and shared with their faculty advisor.
+            We appreciate you taking the time to help with their internship clearance.
+        </p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Visit InternLink</a>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+@model CreatePlacementViewModel
+@{
+    ViewData["Title"] = "New Placement";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <h2>Create a placement</h2>
+        <p class="form-subtitle">Tell us about your internship. A coordinator will review and approve it.</p>
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <form asp-controller="Student" asp-action="CreatePlacement" method="post">
+            <div class="form-group">
+                <label asp-for="CompanyName">Company name</label>
+                <input asp-for="CompanyName" type="text" />
+                <span asp-validation-for="CompanyName" class="field-validation-error"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Position">Position / role</label>
+                <input asp-for="Position" type="text" />
+                <span asp-validation-for="Position" class="field-validation-error"></span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="SupervisorName">Host supervisor name</label>
+                    <input asp-for="SupervisorName" type="text" />
+                    <span asp-validation-for="SupervisorName" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SupervisorEmail">Host supervisor email</label>
+                    <input asp-for="SupervisorEmail" type="email" />
+                    <span asp-validation-for="SupervisorEmail" class="field-validation-error"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupervisorPhone">Host supervisor phone (optional)</label>
+                <input asp-for="SupervisorPhone" type="tel" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="StartDate">Start date</label>
+                    <input asp-for="StartDate" type="date" />
+                    <span asp-validation-for="StartDate" class="field-validation-error"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EndDate">End date</label>
+                    <input asp-for="EndDate" type="date" />
+                    <span asp-validation-for="EndDate" class="field-validation-error"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="RequiredHours">Required hours</label>
+                <input asp-for="RequiredHours" type="number" min="1" />
+                <span asp-validation-for="RequiredHours" class="field-validation-error"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Create placement</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

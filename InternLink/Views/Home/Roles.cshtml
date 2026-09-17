@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Select your role";
+}
+
+<div class="roles-section">
+    <h2>Select your role</h2>
+    <div class="roles-grid">
+        <a class="role-card" asp-controller="Account" asp-action="Login">
+            <div class="role-icon">🎓</div>
+            <h3>I'm a Student</h3>
+            <p>Create placement, log hours, view progress</p>
+            <div class="role-access">
+                <div>✓ Create &amp; manage placements</div>
+                <div>✓ Weekly hour logging</div>
+                <div>✓ Track progress visually</div>
+                <div>✓ Download clearance</div>
+            </div>
+            <span class="role-btn">Access Student Portal</span>
+        </a>
+
+        <a class="role-card" asp-controller="Account" asp-action="Login">
+            <div class="role-icon">📋</div>
+            <h3>I'm a Coordinator</h3>
+            <p>Review logs, approve hours, manage flow</p>
+            <div class="role-access">
+                <div>✓ Review logbook entries</div>
+                <div>✓ Approve or flag hours</div>
+                <div>✓ Generate evaluation links</div>
+                <div>✓ Monitor progress</div>
+            </div>
+            <span class="role-btn">Go to Review Dashboard</span>
+        </a>
+
+        <div class="role-card" style="cursor:default;">
+            <div class="role-icon">👔</div>
+            <h3>I'm a Supervisor</h3>
+            <p>Evaluate student performance (no login needed)</p>
+            <div class="role-access">
+                <div>✓ Token-based evaluation</div>
+                <div>✓ Rate 6 competencies</div>
+                <div>✓ Provide feedback &amp; notes</div>
+                <div>✓ Submit recommendations</div>
+            </div>
+            <span class="role-btn" style="cursor:default;">Use the link your coordinator emailed you</span>
+        </div>
+
+        <a class="role-card" asp-controller="Account" asp-action="Login">
+            <div class="role-icon">👨‍🏫</div>
+            <h3>I'm Faculty</h3>
+            <p>Grade final scores, view analytics</p>
+            <div class="role-access">
+                <div>✓ Grading cockpit view</div>
+                <div>✓ Enter defense scores</div>
+                <div>✓ Auto-calculate finals</div>
+                <div>✓ Generate reports</div>
+            </div>
+            <span class="role-btn">Faculty Dashboard</span>
+        </a>
+    </div>
+
+    <p class="form-footer-link">New here? <a asp-controller="Account" asp-action="Register">Create an account</a> as a Student, Coordinator, or Faculty member.</p>
+</div>

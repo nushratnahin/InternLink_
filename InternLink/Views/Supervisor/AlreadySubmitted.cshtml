@@ -1,0 +1,14 @@
+@model Evaluation
+@{
+    ViewData["Title"] = "Already Submitted";
+}
+<div class="form-page">
+    <div class="form-card">
+        <h2>Evaluation already submitted</h2>
+        <p class="form-subtitle">
+            This evaluation was already submitted on @Model.SubmittedDate?.ToString("MMMM d, yyyy") for @Model.Placement?.Student?.FullName.
+            Each evaluation link can only be used once. Contact the coordinator if you need to make changes.
+        </p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to InternLink</a>
+    </div>
+</div>
