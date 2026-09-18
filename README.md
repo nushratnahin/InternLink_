@@ -22,3 +22,17 @@ The Student clearance page now has a **Download PDF** action that returns an act
 SQLite is stored in `internlink.db`. On a fresh database the demo records are seeded automatically.
 
 If you are testing the seeded demo again after an earlier run, stop the app and remove the existing `internlink.db` so the seed data can be recreated.
+
+## Deploying (Render)
+
+This repo includes a `Dockerfile` and `render.yaml` for one-click deployment on
+[Render](https://render.com)'s free tier: **New + → Blueprint**, pick this repo,
+and Apply. The blueprint provisions a free Render Postgres database alongside
+the web service; the app detects the `DATABASE_URL` env var Render injects and
+switches from SQLite to Postgres automatically (see `Program.cs`), so data
+survives restarts and redeploys.
+
+Render's free Postgres databases are deleted 30 days after creation. When
+that happens, re-run the Blueprint (or create a fresh free database and point
+`DATABASE_URL` at it) — the schema and demo accounts are recreated
+automatically on first startup.
