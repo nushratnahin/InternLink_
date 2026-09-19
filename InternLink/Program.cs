@@ -94,8 +94,9 @@ static string ConvertPostgresUrlToNpgsqlConnectionString(string databaseUrl)
     var uri = new Uri(databaseUrl);
     var userInfo = uri.UserInfo.Split(':', 2);
     var database = uri.AbsolutePath.TrimStart('/');
+    var port = uri.Port == -1 ? 5432 : uri.Port; // Render's Internal URL sometimes omits the port
 
-    return $"Host={uri.Host};Port={uri.Port};Database={database};" +
+    return $"Host={uri.Host};Port={port};Database={database};" +
            $"Username={userInfo[0]};Password={userInfo[1]};" +
            "SSL Mode=Require;Trust Server Certificate=true";
 }
