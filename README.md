@@ -38,4 +38,4 @@ that happens, re-run the Blueprint (or create a fresh free database and point
 automatically on first startup.
 
 ##QR Code
-![Internlink QR Code] (internlink_qr.jpg)
+![InternLink QR Code] (./internlink_qr.jpg)
