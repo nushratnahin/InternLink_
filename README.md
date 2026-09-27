@@ -36,3 +36,6 @@ Render's free Postgres databases are deleted 30 days after creation. When
 that happens, re-run the Blueprint (or create a fresh free database and point
 `DATABASE_URL` at it) — the schema and demo accounts are recreated
 automatically on first startup.
+
+##QR Code
+![Internlink QR Code] (internlink_qr.jpg)
